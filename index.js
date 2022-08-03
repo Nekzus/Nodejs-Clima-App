@@ -23,7 +23,11 @@ const main = async () => {
 
         // Seleccionar el lugar
         const id = await listarLugares(lugares);
-        const { lng, lat, text } = lugares.find((l) => l.id === id);
+        if (id === "0") continue;
+        const lugarSel = lugares.find((l) => l.id === id);
+        const { lng, lat, text } = lugarSel;
+        // Guardar en DB
+        busquedas.agregarHistorial(text);
 
         // Datos del clima
         const { temp, temp_min, temp_max, pressure, humidity, desc } =
@@ -42,8 +46,11 @@ const main = async () => {
         console.log("Húmedad:", humidity, "%".green);
         break;
       case 2:
-        console.log();
-        console.log("  Historial".green);
+        // Historial de búsquedas
+        busquedas.historialCapitalizado.forEach((lugar, i) => {
+          let idx = `${i + 1}.`.green;
+          console.log(`${idx}` + ` ${lugar}`.cyan);
+        });
         break;
     }
     if (opt !== 0) await pausa();
